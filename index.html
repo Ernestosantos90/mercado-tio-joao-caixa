@@ -2,1139 +2,175 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Sistema de Caixa — Mercado do Tio João</title>
-  <meta name="description" content="Sistema de caixa do Mercado do Tio João, feito com HTML, CSS e JavaScript." />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mercado do Tio João — Sistema de Caixa</title>
 
-  <!-- 
-    CSS: AQUI DEFINIMOS A PARTE VISUAL DO PROJETO
-    - cores
-    - fontes
-    - tamanhos
-    - espaçamentos
-    - layout (grid / flex)
-  -->
-  <style>
-    /* Paleta de cores do Mercado do Tio João */
-    :root {
-      --primary: #D90429;      /* Vermelho (destaques, botões principais) */
-      --secondary: #FFD60A;    /* Amarelo (totais, destaques secundários) */
-      --dark: #0A0A0A;         /* Preto (fundo do header e painéis escuros) */
-      --dark-soft: #151515;    /* Preto um pouco mais claro para cartões */
-      --light: #F5F5F5;        /* Cinza claro (fundo da página) */
-      --border: #333333;       /* Cor de borda */
-      --text-light: #FFFFFF;   /* Texto claro em fundo escuro */
-      --text-dark: #111111;    /* Texto escuro em fundo claro */
+  <!-- CSS: estilos da interface -->
+  <link rel="stylesheet" href="styles.css" />
 
-      --radius: 10px;
-      --shadow: 0 12px 28px rgba(0,0,0,0.5);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-
-    /* Reset simples de box-model */
-    * {
-      box-sizing: border-box;
-    }
-
-    /* HTML + CSS trabalhando juntos:
-       - O HTML define a estrutura (body, div, header...)
-       - O CSS aqui estiliza esses elementos
-    */
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: var(--light);
-      display: flex;
-      justify-content: center;
-      padding: 1.5rem 1rem;
-      color: var(--text-dark);
-    }
-
-    .app {
-      width: 100%;
-      max-width: 1100px;
-      background: #ffffff;
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      border: 1px solid #222;
-    }
-
-    /* ===========================
-       HEADER (TOPO DO SISTEMA)
-       =========================== */
-    header {
-      background: linear-gradient(90deg, var(--dark), #1c1c1c);
-      color: var(--text-light);
-      padding: 1rem 1.4rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-
-    .brand-logo {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 20%, var(--secondary), var(--primary));
-      display: grid;
-      place-items: center;
-      font-weight: 800;
-      font-size: 1rem;
-      color: var(--dark);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.7);
-    }
-
-    .brand-text strong {
-      font-size: 1.05rem;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-
-    .brand-text small {
-      display: block;
-      font-size: 0.8rem;
-      color: #e5e5e5;
-    }
-
-    .header-info {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 0.3rem;
-      font-size: 0.85rem;
-    }
-
-    .header-info span {
-      color: #e5e5e5;
-    }
-
-    .pill {
-      padding: 0.25rem 0.7rem;
-      border-radius: 999px;
-      background: rgba(255, 214, 10, 0.12);
-      border: 1px solid rgba(255, 214, 10, 0.6);
-      color: var(--secondary);
-      font-size: 0.78rem;
-    }
-
-    /* ===========================
-       LAYOUT PRINCIPAL
-       =========================== */
-    main {
-      padding: 1.2rem 1.4rem 1.1rem;
-      background: var(--light);
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 1.1fr 1.2fr 0.9fr;
-      gap: 1rem;
-    }
-
-    .section-title {
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #444;
-      margin: 0 0 0.5rem;
-    }
-
-    .card {
-      background: var(--dark-soft);
-      color: var(--text-light);
-      border-radius: var(--radius);
-      padding: 0.7rem 0.8rem;
-      border: 1px solid var(--border);
-      box-shadow: 0 8px 22px rgba(0,0,0,0.6);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .card-header small {
-      font-size: 0.75rem;
-      color: #bbbbbb;
-    }
-
-    /* Campos de texto (layout + usados pelo JS) */
-    .field-row {
-      display: flex;
-      gap: 0.5rem;
-      margin: 0.35rem 0;
-    }
-
-    label {
-      font-size: 0.8rem;
-      color: #dddddd;
-      display: block;
-      margin-top: 0.3rem;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    select {
-      flex: 1;
-      border-radius: 7px;
-      border: 1px solid #444;
-      background: #101010;
-      color: var(--text-light);
-      padding: 0.35rem 0.55rem;
-      font: inherit;
-      font-size: 0.85rem;
-    }
-
-    input::placeholder {
-      color: #777;
-    }
-
-    /* Botões (layout + interações via JS) */
-    .btn {
-      border-radius: 999px;
-      border: 1px solid #444;
-      padding: 0.4rem 0.8rem;
-      font-size: 0.82rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      cursor: pointer;
-      background: #111;
-      color: var(--text-light);
-      text-decoration: none;
-      transition: transform 120ms ease-out, box-shadow 140ms ease-out, background 120ms ease-out, border-color 120ms ease-out;
-    }
-
-    .btn.primary {
-      background: var(--primary);
-      border-color: #a50320;
-    }
-
-    .btn.secondary {
-      background: var(--secondary);
-      color: var(--dark);
-      border-color: #b59607;
-    }
-
-    .btn.outline {
-      background: transparent;
-      border-color: #666;
-    }
-
-    .btn.small {
-      padding: 0.3rem 0.7rem;
-      font-size: 0.78rem;
-    }
-
-    .btn-icon {
-      font-size: 0.9rem;
-    }
-
-    .btn-group {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      margin-top: 0.3rem;
-    }
-
-    .btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 10px 24px rgba(0,0,0,0.7);
-      border-color: #777;
-    }
-
-    /* ===========================
-       FILA DE CLIENTES
-       =========================== */
-    .queue-list {
-      list-style: none;
-      padding: 0;
-      margin: 0.4rem 0 0;
-      max-height: 210px;
-      overflow-y: auto;
-      font-size: 0.82rem;
-    }
-
-    .queue-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.25rem 0.4rem;
-      border-radius: 7px;
-      background: #111;
-      border: 1px solid #333;
-      margin-bottom: 0.25rem;
-    }
-
-    .queue-name {
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-
-    .queue-ticket {
-      padding: 0.2rem 0.45rem;
-      border-radius: 999px;
-      background: rgba(255, 214, 10, 0.12);
-      color: var(--secondary);
-      font-size: 0.75rem;
-      border: 1px solid rgba(255, 214, 10, 0.6);
-    }
-
-    /* ===========================
-       PRODUTOS
-       =========================== */
-    .products-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 0.45rem;
-      margin-top: 0.3rem;
-      max-height: 260px;
-      overflow-y: auto;
-      font-size: 0.83rem;
-    }
-
-    /* Cada produto vira um "botão visual" clicável (JS adiciona ao carrinho) */
-    .product-card {
-      background: #111;
-      border-radius: 8px;
-      border: 1px solid #333;
-      padding: 0.4rem 0.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.15rem;
-      cursor: pointer;
-      transition: transform 120ms ease-out, box-shadow 140ms ease-out, border-color 120ms ease-out, background 120ms ease-out;
-    }
-
-    .product-card:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 10px 24px rgba(0,0,0,0.8);
-      border-color: var(--secondary);
-      background: #181818;
-    }
-
-    .product-name {
-      font-weight: 500;
-    }
-
-    .product-meta {
-      display: flex;
-      justify-content: space-between;
-      color: #bbbbbb;
-      font-size: 0.75rem;
-    }
-
-    .product-price {
-      color: var(--secondary);
-      font-weight: 600;
-    }
-
-    /* ===========================
-       CAIXA / RESUMO DA VENDA
-       =========================== */
-    .cart-list {
-      list-style: none;
-      padding: 0;
-      margin: 0.3rem 0 0.5rem;
-      max-height: 150px;
-      overflow-y: auto;
-      font-size: 0.82rem;
-    }
-
-    .cart-item {
-      display: grid;
-      grid-template-columns: 1.4fr 0.5fr 0.7fr;
-      gap: 0.35rem;
-      padding: 0.25rem 0.35rem;
-      border-radius: 7px;
-      background: #111;
-      border: 1px solid #333;
-      margin-bottom: 0.25rem;
-      align-items: center;
-    }
-
-    .cart-name {
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-
-    .cart-qty {
-      text-align: center;
-    }
-
-    .cart-qty span {
-      display: inline-block;
-      min-width: 1.6rem;
-      padding: 0.1rem 0.2rem;
-      border-radius: 5px;
-      background: #202020;
-    }
-
-    .cart-price {
-      text-align: right;
-      color: var(--secondary);
-      font-weight: 600;
-    }
-
-    .summary {
-      border-top: 1px dashed #444;
-      padding-top: 0.4rem;
-      margin-top: 0.2rem;
-      font-size: 0.86rem;
-    }
-
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.1rem;
-    }
-
-    .summary-label {
-      color: #dddddd;
-    }
-
-    .summary-value {
-      font-weight: 500;
-    }
-
-    .summary-total {
-      margin-top: 0.25rem;
-      padding-top: 0.25rem;
-      border-top: 1px solid #555;
-      color: var(--secondary);
-      font-weight: 700;
-      font-size: 1rem;
-    }
-
-    .payment-info {
-      margin-top: 0.4rem;
-      font-size: 0.8rem;
-      color: #dddddd;
-    }
-
-    .payment-methods {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-top: 0.25rem;
-      font-size: 0.78rem;
-    }
-
-    .badge {
-      padding: 0.15rem 0.45rem;
-      border-radius: 999px;
-      border: 1px solid #666;
-      background: #111;
-      color: #f3f3f3;
-      cursor: pointer;
-      transition: background 120ms ease-out, border-color 120ms ease-out, transform 120ms ease-out;
-    }
-
-    .badge:hover {
-      transform: translateY(-1px);
-      border-color: var(--secondary);
-    }
-
-    /* Badge ativa (forma de pagamento selecionada via JS) */
-    .badge.active {
-      background: var(--secondary);
-      color: var(--dark);
-      border-color: var(--secondary);
-      font-weight: 600;
-    }
-
-    .footer-note {
-      margin-top: 0.4rem;
-      font-size: 0.75rem;
-      color: #bbbbbb;
-    }
-
-    .status-msg {
-      margin-top: 0.3rem;
-      font-size: 0.78rem;
-      min-height: 1rem;
-    }
-
-    .status-ok {
-      color: #bbf7d0;
-    }
-
-    .status-error {
-      color: #fecaca;
-    }
-
-    /* ===========================
-       RODAPÉ DO LAYOUT
-       =========================== */
-    footer {
-      padding: 0.6rem 1.4rem 1rem;
-      background: #111;
-      color: #aaaaaa;
-      font-size: 0.78rem;
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      border-top: 1px solid #222;
-    }
-
-    footer strong {
-      color: var(--secondary);
-    }
-
-    /* Responsividade */
-    @media (max-width: 980px) {
-      .layout {
-        grid-template-columns: 1fr 1fr;
-        grid-template-areas:
-          "fila caixa"
-          "produtos caixa";
-      }
-      .col-queue { grid-area: fila; }
-      .col-products { grid-area: produtos; }
-      .col-cart { grid-area: caixa; }
-    }
-
-    @media (max-width: 720px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+  <!-- JS: lógica do sistema de caixa -->
+  <script src="script.js" defer></script>
 </head>
 <body>
-  <!-- 
-    HTML: AQUI DEFINIMOS A ESTRUTURA DA PÁGINA
-    - header, main, footer
-    - seções, títulos, textos, botões, listas...
-  -->
-  <div class="app">
-    <!-- TOPO DO SISTEMA -->
-    <header>
-      <div class="brand">
-        <div class="brand-logo">TJ</div>
-        <div class="brand-text">
-          <strong>Mercado do Tio João</strong>
-          <small>Sistema de Caixa / Atendimento</small>
-        </div>
+  <main class="app">
+    <!-- Cabeçalho -->
+    <header class="header">
+      <div class="title-group">
+        <h1><span>Mercado</span> do Tio João</h1>
+        <p>Sistema de Caixa & Atendimento — simulação para portfólio Front-End.</p>
       </div>
-      <div class="header-info">
-        <span>Operador: <strong>Madalena Mavinga</strong></span>
-        <span>Caixa: <span id="caixaNumero">01</span></span>
-        <span class="pill">HTML + CSS + JavaScript (Front-End)</span>
+      <div class="badge">
+        <strong>Atendente</strong>
+        <span>Maria Mavinga</span>
+        <strong style="margin-top:6px;">STACK</strong>
+        <span>HTML • CSS • JavaScript</span>
       </div>
     </header>
 
-    <!-- CONTEÚDO PRINCIPAL -->
-    <main>
-      <div class="layout">
-        <!-- COLUNA 1: FILA DE CLIENTES -->
-        <section class="col-queue">
-          <h2 class="section-title">Fila de clientes</h2>
-          <div class="card">
-            <div class="card-header">
-              <span>Gerenciamento da fila</span>
-              <small>Controlado via JavaScript</small>
-            </div>
+    <!-- Layout principal -->
+    <div class="layout">
+      <!-- Coluna esquerda: fila + produtos -->
+      <section class="card">
+        <h2>Atendimento</h2>
 
-            <label for="cliente">Novo cliente</label>
-            <div class="field-row">
-              <input id="cliente" type="text" placeholder="Nome do cliente (ex: Maria, João...)" />
-              <button class="btn small primary" type="button" id="addCustomerBtn">
-                <span class="btn-icon">➕</span>
-                <span>Adicionar</span>
-              </button>
-            </div>
-
-            <div class="btn-group">
-              <button class="btn small secondary" type="button" id="startServiceBtn">
-                <span class="btn-icon">▶️</span>
-                <span>Iniciar atendimento</span>
-              </button>
-              <button class="btn small outline" type="button" id="clearQueueBtn">
-                <span class="btn-icon">🗑</span>
-                <span>Limpar fila</span>
-              </button>
-            </div>
-
-            <!-- Lista da fila será preenchida via JS -->
-            <ul class="queue-list" id="queueList"></ul>
+        <!-- Fila / cliente atual -->
+        <div class="section">
+          <div class="section-title">
+            <span>Fila de clientes</span>
           </div>
-        </section>
-
-        <!-- COLUNA 2: PRODUTOS -->
-        <section class="col-products">
-          <h2 class="section-title">Produtos</h2>
-          <div class="card">
-            <div class="card-header">
-              <span>Lista de produtos</span>
-              <small>Clique para adicionar ao caixa</small>
-            </div>
-
-            <!-- Grid de produtos será gerada via JavaScript -->
-            <div class="products-grid" id="productsGrid"></div>
+          <label for="clienteSelect">Selecione o cliente da fila</label>
+          <select id="clienteSelect">
+            <option value="">Selecione...</option>
+            <option>Cliente 1 — Maria</option>
+            <option>Cliente 2 — João</option>
+            <option>Cliente 3 — Ana</option>
+            <option>Cliente 4 — Carlos</option>
+          </select>
+          <div class="btn-group">
+            <button class="btn secondary" id="btnChamarCliente">Chamar próximo cliente</button>
           </div>
-        </section>
+          <p class="queue-label">
+            Cliente em atendimento: <strong id="clienteAtual">Nenhum</strong>
+          </p>
+        </div>
 
-        <!-- COLUNA 3: CAIXA / RESUMO DA VENDA -->
-        <section class="col-cart">
-          <h2 class="section-title">Caixa atual</h2>
-          <div class="card">
-            <div class="card-header">
-              <span>Resumo da venda</span>
-              <small>Atualizado via JavaScript</small>
-            </div>
+        <!-- Produtos rápidos -->
+        <div class="section">
+          <div class="section-title">
+            <span>Produtos rápidos</span>
+            <span class="hint">Clique para adicionar ao carrinho</span>
+          </div>
 
-            <!-- Cliente atual (controlado via JS) -->
-            <div style="font-size:0.85rem;margin-bottom:0.35rem;">
-              Cliente em atendimento: <strong id="currentCustomerLabel">Nenhum</strong>
-            </div>
+          <div class="product-grid">
+            <!-- Botões de produto: HTML + data-* lidos pelo JavaScript -->
+            <button class="product-btn" data-name="Arroz 5kg" data-price="24.90">
+              <strong>Arroz 5kg</strong>
+              <span>R$ 24,90</span>
+            </button>
+            <button class="product-btn" data-name="Feijão 1kg" data-price="8.50">
+              <strong>Feijão 1kg</strong>
+              <span>R$ 8,50</span>
+            </button>
+            <button class="product-btn" data-name="Leite 1L" data-price="4.80">
+              <strong>Leite 1L</strong>
+              <span>R$ 4,80</span>
+            </button>
+            <button class="product-btn" data-name="Pão francês" data-price="0.80">
+              <strong>Pão francês</strong>
+              <span>R$ 0,80 (un.)</span>
+            </button>
+            <button class="product-btn" data-name="Refrigerante 2L" data-price="9.90">
+              <strong>Refrigerante 2L</strong>
+              <span>R$ 9,90</span>
+            </button>
+            <button class="product-btn" data-name="Sabonete" data-price="3.20">
+              <strong>Sabonete</strong>
+              <span>R$ 3,20</span>
+            </button>
+          </div>
 
-            <!-- Itens no carrinho (preenchido via JS) -->
-            <ul class="cart-list" id="cartList"></ul>
+          <div class="section" style="margin-top:0.8rem;">
+            <label for="qtdProduto">Quantidade (para o próximo item)</label>
+            <input id="qtdProduto" type="number" min="1" value="1" />
+            <p class="info">
+              Dica: selecione a quantidade antes de clicar nos produtos. A quantidade volta para 1 automaticamente depois.
+            </p>
+          </div>
+        </div>
+      </section>
 
-            <!-- Resumo de valores -->
-            <div class="summary">
-              <div class="summary-row">
-                <span class="summary-label">Itens:</span>
-                <span class="summary-value" id="summaryItems">0</span>
-              </div>
-              <div class="summary-row">
-                <span class="summary-label">Subtotal:</span>
-                <span class="summary-value" id="summarySubtotal">R$ 0,00</span>
-              </div>
-              <div class="summary-row">
-                <span class="summary-label">Desconto:</span>
-                <span class="summary-value" id="summaryDiscount">R$ 0,00</span>
-              </div>
-              <div class="summary-row summary-total">
-                <span>Total a pagar:</span>
-                <span id="summaryTotal">R$ 0,00</span>
-              </div>
-            </div>
+      <!-- Coluna direita: carrinho + pagamento -->
+      <section class="card">
+        <h2>Resumo da compra</h2>
 
-            <!-- Formas de pagamento (selecionadas via JS) -->
-            <div class="payment-info">
-              Forma de pagamento:
-              <div class="payment-methods" id="paymentMethods">
-                <span class="badge active" data-method="Dinheiro">Dinheiro</span>
-                <span class="badge" data-method="Cartão">Cartão</span>
-                <span class="badge" data-method="Pix">Pix</span>
-              </div>
-            </div>
+        <!-- Tabela de itens -->
+        <table class="cart-table" aria-label="Itens no carrinho">
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Qtd.</th>
+              <th>Preço</th>
+              <th>Total</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="cartBody">
+            <!-- Linhas são inseridas pelo JavaScript -->
+          </tbody>
+        </table>
 
-            <!-- Botões de ação -->
-            <div class="btn-group">
-              <button class="btn primary" type="button" id="finishSaleBtn">
-                <span class="btn-icon">✅</span>
-                <span>Finalizar venda</span>
-              </button>
-              <button class="btn outline small" type="button" id="printReceiptBtn">
-                <span class="btn-icon">🧾</span>
-                <span>Imprimir cupom</span>
-              </button>
-              <button class="btn outline small" type="button" id="clearCartBtn">
-                <span class="btn-icon">🧹</span>
-                <span>Limpar caixa</span>
-              </button>
-            </div>
-
-            <!-- Mensagens de status (erros/sucesso) -->
-            <div class="status-msg" id="statusMsg"></div>
-
-            <div class="footer-note">
-              * Todo o comportamento dinâmico (fila, caixa, totais) é controlado com <strong>JavaScript</strong>.
+        <!-- Totais e pagamento -->
+        <div class="summary">
+          <div class="summary-row">
+            <div>
+              <div class="total-label">Total a receber</div>
+              <div class="total-value" id="totalGeral">R$ 0,00</div>
             </div>
           </div>
-        </section>
-      </div>
-    </main>
 
-    <!-- RODAPÉ DO LAYOUT -->
-    <footer>
-      <span>© 2025 Mercado do Tio João — Sistema de Caixa</span>
-      <span>Desenvolvido por <strong>Ernesto Bento Figueiredo dos Santos</strong> usando HTML, CSS e JavaScript.</span>
-    </footer>
-  </div>
-
-  <!-- 
-    JavaScript (JS):
-    - A PARTIR DAQUI ENTRA A LÓGICA DO SISTEMA
-    - Fila de clientes, produtos, carrinho, totais e mensagens de status.
-  -->
-  <script>
-    /* 
-      ===========================
-      DADOS DO SISTEMA (JAVASCRIPT)
-      ===========================
-      - Aqui definimos:
-        • lista de produtos do mercado
-        • fila de clientes
-        • cliente atual
-        • carrinho do caixa
-    */
-
-    // Lista de produtos do Mercado do Tio João
-    const products = [
-      { id: 1, name: 'Arroz 5kg',      price: 29.90, category: 'Alimentos' },
-      { id: 2, name: 'Feijão 1kg',     price: 8.50,  category: 'Alimentos' },
-      { id: 3, name: 'Macarrão 500g',  price: 5.20,  category: 'Alimentos' },
-      { id: 4, name: 'Óleo de soja',   price: 7.80,  category: 'Alimentos' },
-      { id: 5, name: 'Leite 1L',       price: 4.80,  category: 'Bebidas'   },
-      { id: 6, name: 'Refrigerante 2L',price: 9.90,  category: 'Bebidas'   },
-      { id: 7, name: 'Sabonete',       price: 3.20,  category: 'Higiene'   },
-      { id: 8, name: 'Detergente',     price: 2.80,  category: 'Limpeza'   },
-    ];
-
-    // Estado da aplicação
-    let queue = [];           // fila de clientes
-    let ticketCounter = 1;    // gera senhas 1, 2, 3...
-    let currentCustomer = null; // cliente em atendimento
-    let cart = [];            // itens do carrinho
-    let selectedPayment = 'Dinheiro'; // forma de pagamento padrão
-
-    /* 
-      ===========================
-      FUNÇÕES UTILITÁRIAS
-      ===========================
-    */
-
-    // Formata números em dinheiro brasileiro (R$ 0,00)
-    function formatCurrency(value) {
-      return 'R$ ' + value.toFixed(2).replace('.', ',');
-    }
-
-    // Atualiza mensagem de status na área do caixa
-    function setStatus(message, type = 'ok') {
-      const statusMsg = document.getElementById('statusMsg');
-      statusMsg.textContent = message || '';
-      statusMsg.className = 'status-msg'; // reset
-      if (!message) return;
-      statusMsg.classList.add(type === 'error' ? 'status-error' : 'status-ok');
-    }
-
-    /* 
-      ===========================
-      MANIPULAÇÃO DA FILA (QUEUE)
-      ===========================
-      HTML + JS:
-      - HTML fornece lista <ul id="queueList">
-      - JS cria os <li> dinamicamente a partir do array "queue"
-    */
-
-    const queueListEl = document.getElementById('queueList');
-    const customerInput = document.getElementById('cliente');
-    const currentCustomerLabel = document.getElementById('currentCustomerLabel');
-
-    function renderQueue() {
-      queueListEl.innerHTML = '';
-
-      if (queue.length === 0) {
-        const li = document.createElement('li');
-        li.className = 'queue-item';
-        li.innerHTML = '<span class="queue-name">Nenhum cliente na fila.</span>';
-        queueListEl.appendChild(li);
-        return;
-      }
-
-      queue.forEach(c => {
-        const li = document.createElement('li');
-        li.className = 'queue-item';
-
-        const nameSpan = document.createElement('span');
-        nameSpan.className = 'queue-name';
-        nameSpan.textContent = c.name;
-
-        const ticketSpan = document.createElement('span');
-        ticketSpan.className = 'queue-ticket';
-        ticketSpan.textContent = 'Senha ' + c.ticket;
-
-        li.appendChild(nameSpan);
-        li.appendChild(ticketSpan);
-        queueListEl.appendChild(li);
-      });
-    }
-
-    // Adiciona um cliente na fila
-    function addCustomer() {
-      const rawName = customerInput.value.trim();
-      const ticket = ticketCounter++;
-      const name = rawName || `Cliente ${ticket.toString().padStart(2, '0')}`;
-
-      queue.push({ name, ticket });
-      customerInput.value = '';
-      renderQueue();
-      setStatus(`Cliente adicionado à fila: ${name}`, 'ok');
-      customerInput.focus();
-    }
-
-    // Inicia atendimento de um cliente (tira da fila e manda para o caixa)
-    function startService() {
-      if (currentCustomer) {
-        setStatus('Já existe um cliente em atendimento.', 'error');
-        return;
-      }
-      if (queue.length === 0) {
-        setStatus('Não há clientes na fila.', 'error');
-        return;
-      }
-
-      currentCustomer = queue.shift();
-      renderQueue();
-      currentCustomerLabel.textContent = `${currentCustomer.name} (Senha ${currentCustomer.ticket})`;
-      // Ao iniciar novo atendimento, limpamos o carrinho
-      cart = [];
-      renderCart();
-      setStatus(`Atendimento iniciado: ${currentCustomer.name}`, 'ok');
-    }
-
-    // Limpa toda a fila
-    function clearQueue() {
-      queue = [];
-      renderQueue();
-      setStatus('Fila limpa.', 'ok');
-    }
-
-    /* 
-      ===========================
-      PRODUTOS (LISTA E CLIQUES)
-      ===========================
-      HTML + JS:
-      - HTML fornece <div id="productsGrid">
-      - JS gera os "cards" com nome, categoria, preço
-      - Ao clicar em um card, o JS adiciona o item ao carrinho
-    */
-
-    const productsGridEl = document.getElementById('productsGrid');
-
-    function renderProducts() {
-      productsGridEl.innerHTML = '';
-      products.forEach(prod => {
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.innerHTML = `
-          <div class="product-name">${prod.name}</div>
-          <div class="product-meta">
-            <span>${prod.category}</span>
-            <span class="product-price">${formatCurrency(prod.price)}</span>
+          <div class="payment-grid">
+            <div>
+              <label for="formaPagamento">Forma de pagamento</label>
+              <select id="formaPagamento">
+                <option value="">Selecione...</option>
+                <option value="dinheiro">Dinheiro</option>
+                <option value="debito">Cartão de débito</option>
+                <option value="credito">Cartão de crédito</option>
+                <option value="pix">PIX</option>
+              </select>
+            </div>
+            <div>
+              <label for="valorRecebido">Valor recebido (apenas para dinheiro)</label>
+              <input id="valorRecebido" type="number" min="0" step="0.01" placeholder="0,00" />
+              <p class="info">O troco será calculado automaticamente.</p>
+            </div>
           </div>
-        `;
-        // Ao clicar em um produto, adiciona ao carrinho
-        card.addEventListener('click', () => addToCart(prod));
-        productsGridEl.appendChild(card);
-      });
-    }
 
-    /* 
-      ===========================
-      CARRINHO (CART)
-      ===========================
-      - JS controla array "cart"
-      - HTML mostra <ul id="cartList"> com itens
-    */
+          <div class="summary-row">
+            <span>Troco:</span>
+            <span id="trocoDisplay">R$ 0,00</span>
+          </div>
+        </div>
 
-    const cartListEl = document.getElementById('cartList');
-    const summaryItemsEl = document.getElementById('summaryItems');
-    const summarySubtotalEl = document.getElementById('summarySubtotal');
-    const summaryDiscountEl = document.getElementById('summaryDiscount');
-    const summaryTotalEl = document.getElementById('summaryTotal');
+        <!-- Ações finais -->
+        <div class="actions-footer">
+          <button class="btn secondary" id="btnCancelar">
+            Cancelar compra
+          </button>
+          <button class="btn" id="btnFinalizar">
+            Finalizar venda
+          </button>
+        </div>
 
-    // Adiciona um produto ao carrinho (ou aumenta quantidade)
-    function addToCart(product) {
-      if (!currentCustomer) {
-        setStatus('Inicie o atendimento de um cliente antes de registrar produtos.', 'error');
-        return;
-      }
-
-      const existing = cart.find(item => item.id === product.id);
-      if (existing) {
-        existing.qty += 1;
-      } else {
-        cart.push({
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          qty: 1
-        });
-      }
-      renderCart();
-      setStatus(`Item adicionado: ${product.name}`, 'ok');
-    }
-
-    // Atualiza quantidade de um item (aumenta ou diminui)
-    function changeCartQty(id, delta) {
-      const item = cart.find(i => i.id === id);
-      if (!item) return;
-      item.qty += delta;
-      if (item.qty <= 0) {
-        // remove item se quantidade ficar 0 ou negativa
-        cart = cart.filter(i => i.id !== id);
-      }
-      renderCart();
-    }
-
-    // Remove item do carrinho
-    function removeCartItem(id) {
-      cart = cart.filter(i => i.id !== id);
-      renderCart();
-    }
-
-    // Limpa o carrinho
-    function clearCart() {
-      cart = [];
-      renderCart();
-      setStatus('Caixa limpo (carrinho esvaziado).', 'ok');
-    }
-
-    // Renderiza os itens do carrinho na tela
-    function renderCart() {
-      cartListEl.innerHTML = '';
-
-      if (cart.length === 0) {
-        const li = document.createElement('li');
-        li.style.fontSize = '0.8rem';
-        li.style.color = '#bbbbbb';
-        li.textContent = 'Nenhum item no caixa.';
-        cartListEl.appendChild(li);
-      } else {
-        cart.forEach(item => {
-          const li = document.createElement('li');
-          li.className = 'cart-item';
-
-          const nameSpan = document.createElement('span');
-          nameSpan.className = 'cart-name';
-          nameSpan.textContent = item.name;
-
-          const qtySpan = document.createElement('span');
-          qtySpan.className = 'cart-qty';
-          qtySpan.innerHTML = `
-            <span>${item.qty}x</span>
-          `;
-
-          // Clique esquerdo aumenta a quantidade, direito poderia diminuir (mas vamos ter botões)
-          qtySpan.title = 'Clique em + ou - para ajustar a quantidade';
-
-          const priceSpan = document.createElement('span');
-          priceSpan.className = 'cart-price';
-          priceSpan.textContent = formatCurrency(item.price * item.qty);
-
-          li.appendChild(nameSpan);
-          li.appendChild(qtySpan);
-          li.appendChild(priceSpan);
-
-          // Adiciona mini botões + e - abaixo
-          const controls = document.createElement('div');
-          controls.style.gridColumn = '1 / -1';
-          controls.style.display = 'flex';
-          controls.style.justifyContent = 'flex-end';
-          controls.style.gap = '0.35rem';
-          controls.style.fontSize = '0.75rem';
-          controls.style.marginTop = '0.1rem';
-
-          const btnMais = document.createElement('button');
-          btnMais.type = 'button';
-          btnMais.className = 'btn small outline';
-          btnMais.textContent = '+';
-          btnMais.style.padding = '0.15rem 0.4rem';
-          btnMais.addEventListener('click', () => changeCartQty(item.id, +1));
-
-          const btnMenos = document.createElement('button');
-          btnMenos.type = 'button';
-          btnMenos.className = 'btn small outline';
-          btnMenos.textContent = '−';
-          btnMenos.style.padding = '0.15rem 0.4rem';
-          btnMenos.addEventListener('click', () => changeCartQty(item.id, -1));
-
-          const btnRemover = document.createElement('button');
-          btnRemover.type = 'button';
-          btnRemover.className = 'btn small outline';
-          btnRemover.textContent = 'Remover';
-          btnRemover.style.padding = '0.15rem 0.6rem';
-          btnRemover.addEventListener('click', () => removeCartItem(item.id));
-
-          controls.appendChild(btnMais);
-          controls.appendChild(btnMenos);
-          controls.appendChild(btnRemover);
-
-          li.appendChild(controls);
-
-          cartListEl.appendChild(li);
-        });
-      }
-
-      updateSummary();
-    }
-
-    // Atualiza os totais (itens, subtotal, desconto, total)
-    function updateSummary() {
-      let items = 0;
-      let subtotal = 0;
-
-      cart.forEach(item => {
-        items += item.qty;
-        subtotal += item.price * item.qty;
-      });
-
-      const discount = 0; // futuro: aplicar regra de desconto se quiser
-      const total = subtotal - discount;
-
-      summaryItemsEl.textContent = items;
-      summarySubtotalEl.textContent = formatCurrency(subtotal);
-      summaryDiscountEl.textContent = formatCurrency(discount);
-      summaryTotalEl.textContent = formatCurrency(total);
-    }
-
-    /* 
-      ===========================
-      FORMA DE PAGAMENTO
-      ===========================
-      - JS adiciona/remover classe .active nas badges
-    */
-
-    const paymentMethodsEl = document.getElementById('paymentMethods');
-
-    function setupPaymentMethods() {
-      const badges = paymentMethodsEl.querySelectorAll('.badge');
-      badges.forEach(badge => {
-        badge.addEventListener('click', () => {
-          badges.forEach(b => b.classList.remove('active'));
-          badge.classList.add('active');
-          selectedPayment = badge.dataset.method;
-          setStatus(`Forma de pagamento selecionada: ${selectedPayment}`, 'ok');
-        });
-      });
-    }
-
-    /* 
-      ===========================
-      FINALIZAR VENDA E CUPOM
-      ===========================
-    */
-
-    const finishSaleBtn = document.getElementById('finishSaleBtn');
-    const printReceiptBtn = document.getElementById('printReceiptBtn');
-    const clearCartBtn = document.getElementById('clearCartBtn');
-
-    function finishSale() {
-      if (!currentCustomer) {
-        setStatus('Nenhum cliente em atendimento.', 'error');
-        return;
-      }
-      if (cart.length === 0) {
-        setStatus('Carrinho vazio. Adicione itens antes de finalizar.', 'error');
-        return;
-      }
-
-      // Calcula o total final
-      let items = 0;
-      let total = 0;
-      cart.forEach(item => {
-        items += item.qty;
-        total += item.price * item.qty;
-      });
-
-      // Aqui, poderíamos salvar em um "histórico de vendas" (array, LocalStorage etc.)
-      alert(
-        `Venda concluída!\n\n` +
-        `Cliente: ${currentCustomer.name} (Senha ${currentCustomer.ticket})\n` +
-        `Itens: ${items}\n` +
-        `Total: ${formatCurrency(total)}\n` +
-        `Pagamento: ${selectedPayment}`
-      );
-
-      setStatus(
-        `Venda concluída para ${currentCustomer.name} no valor de ${formatCurrency(total)} (${selectedPayment}).`,
-        'ok'
-      );
-
-      // Limpa carrinho e cliente atual
-      cart = [];
-      renderCart();
-      currentCustomer = null;
-      currentCustomerLabel.textContent = 'Nenhum';
-
-      // Se tiver mais gente na fila, já puxa o próximo
-      if (queue.length > 0) {
-        startService();
-      }
-    }
-
-    function printReceipt() {
-      if (!currentCustomer) {
-        setStatus('Nenhuma venda em andamento para imprimir cupom.', 'error');
-        return;
-      }
-      if (cart.length === 0) {
-        setStatus('Carrinho vazio. Não há itens para o cupom.', 'error');
-        return;
-      }
-      // Apenas simulação:
-      alert('Cupom impresso (simulação). Aqui você poderia gerar um PDF ou abrir uma nova janela.');
-      setStatus('Cupom impresso (simulação).', 'ok');
-    }
-
-    /* 
-      ===========================
-      EVENTOS DOS BOTÕES
-      ===========================
-    */
-
-    const addCustomerBtn = document.getElementById('addCustomerBtn');
-    const startServiceBtn = document.getElementById('startServiceBtn');
-    const clearQueueBtn = document.getElementById('clearQueueBtn');
-
-    addCustomerBtn.addEventListener('click', addCustomer);
-    startServiceBtn.addEventListener('click', startService);
-    clearQueueBtn.addEventListener('click', clearQueue);
-
-    // Enter no campo cliente também adiciona à fila
-    customerInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        addCustomer();
-      }
-    });
-
-    clearCartBtn.addEventListener('click', clearCart);
-    finishSaleBtn.addEventListener('click', finishSale);
-    printReceiptBtn.addEventListener('click', printReceipt);
-
-    /* 
-      ===========================
-      INICIALIZAÇÃO DO SISTEMA
-      ===========================
-      - JS monta a fila vazia
-      - renderiza os produtos
-      - renderiza o carrinho vazio
-      - configura as formas de pagamento
-    */
-
-    function init() {
-      renderQueue();
-      renderProducts();
-      renderCart();
-      setupPaymentMethods();
-      setStatus('Sistema pronto para uso. Adicione um cliente à fila para começar.', 'ok');
-    }
-
-    // Chama init quando o script é carregado
-    init();
-  </script>
+        <p class="info">
+          Este sistema é uma simulação para estudo e portfólio. Nenhum dado real é armazenado.
+        </p>
+      </section>
+    </div>
+  </main>
 </body>
 </html>
+
+
 
 
